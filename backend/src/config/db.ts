@@ -1,17 +1,33 @@
 import mongoose from "mongoose";
-// Function to connect to MongoDB
-const connectDB = async () => {
+
+const connectDB = async (): Promise<void> => {
   try {
-    // Connect to MongoDB using the connection string from environment variables
-    const connection = await mongoose.connect(process.env.MONGO_URI as string);
-    // Log success message with the host information
-    console.log(`MongoDB connected: ${connection.connection.host}`);
+    mongoose.set("strictQuery", false);
+    
+    const connection = await mongoose.connect(process.env.MONGO_URI as string, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+
+    console.log(`✅ MongoDB connected: ${connection.connection.host}`);
+    
+    mongoose.connection.on("error", (err) => {
+      console.error("MongoDB connection error:", err);
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      console.warn("⚠️  MongoDB disconnected");
+    });
+
+    process.on("SIGINT", async () => {
+      await mongoose.connection.close();
+      console.log("MongoDB connection closed due to app termination");
+      process.exit(0);
+    });
   } catch (error) {
-    // Log any connection errors
-    console.error("MongoDB connection failed:", error);
+    console.error("❌ MongoDB connection failed:", error);
     process.exit(1);
   }
 };
 
-// Export the connectDB function as the default export
 export default connectDB;
