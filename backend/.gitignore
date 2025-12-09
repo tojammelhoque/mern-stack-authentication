@@ -6,7 +6,8 @@ dist/
 
 # Environment variables
 .env
-.env.* # in case you use multiple
+.env.*
+!.env.example  # ← Add this line to commit the example file
 
 # Logs
 npm-debug.log*

@@ -80,4 +80,4 @@ userSchema.methods.comparePassword = async function (
 };
 
 userSchema.index({ email: 1 });
-export const User = mongoose.model<IUser>("User", userSchema);
+export default mongoose.model<IUser>("User", userSchema);

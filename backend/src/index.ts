@@ -20,8 +20,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// Listen on the specified port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  connectDB();
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    success: true, 
+    message: "Server is running",
+    timestamp: new Date().toISOString()
+  });
 });
+
+// Start server only after DB connects
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(`📝 Environment: ${process.env.NODE_ENV || "development"}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
