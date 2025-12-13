@@ -1,3 +1,5 @@
+// ===== backend/src/templates/emails/resetPassword.template.ts =====
+
 export const resetPasswordEmailTemplate = (
   userName: string,
   resetToken: string,
@@ -34,7 +36,7 @@ export const resetPasswordEmailTemplate = (
                     </p>
                     
                     <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 15px 0;">
-                      We received a request to reset your password. Use the button below to create a new password:
+                      We received a request to reset your password. Click the button below to create a new password:
                     </p>
                     
                     <!-- Reset Button -->
@@ -43,7 +45,7 @@ export const resetPasswordEmailTemplate = (
                         <td align="center">
                           <a href="${resetUrl}" 
                              style="display: inline-block;
-                                    padding: 12px 30px;
+                                    padding: 15px 40px;
                                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                     color: white;
                                     text-decoration: none;
@@ -81,7 +83,7 @@ export const resetPasswordEmailTemplate = (
                     </div>
                     
                     <p style="color: #666; font-size: 14px; margin-top: 30px;">
-                      If you're having trouble, contact support at 
+                      If you're having trouble clicking the button, contact support at 
                       <a href="mailto:support@yourapp.com" style="color: #667eea; text-decoration: none;">support@yourapp.com</a>
                     </p>
                   </td>

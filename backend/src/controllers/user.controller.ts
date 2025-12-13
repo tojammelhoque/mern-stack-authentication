@@ -5,6 +5,7 @@ import { AppError } from "../utils/errorHandler";
 import { generateTokenAndSetCookie, verifyToken } from "../helpers/auth.helper";
 import {
   generateVerificationToken,
+  generateSecureResetToken,
   isVerificationExpired,
 } from "../helpers/verification";
 import {
@@ -213,15 +214,15 @@ export const forgotPassword = async (
   }
 
   // Generate reset token (6 digit code)
-  const { code, expiresAt } = generateVerificationToken();
+  const { token, expiresAt } = generateSecureResetToken();
 
-  user.resetPasswordToken = code;
+  user.resetPasswordToken = token;
   user.resetPasswordExpire = expiresAt;
   await user.save();
 
   // Send reset email
   try {
-    await sendPasswordResetEmail(user.email, user.name, code);
+    await sendPasswordResetEmail(user.email, user.name, token);
   } catch (error) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -229,7 +230,7 @@ export const forgotPassword = async (
     throw new AppError("Failed to send reset email. Please try again.", 500);
   }
 
-  ApiResponse.success(res, null, "Password reset code sent to your email");
+  ApiResponse.success(res, null, "Password reset link sent to your email");
 };
 
 // ==================== RESET PASSWORD ====================
@@ -238,10 +239,10 @@ export const resetPassword = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { code, newPassword } = req.body;
+  const { token, newPassword } = req.body;
 
-  if (!code || !newPassword) {
-    throw new AppError("Code and new password are required", 400);
+  if (!token || !newPassword) {
+    throw new AppError("Reset token and new password are required", 400);
   }
 
   if (newPassword.length < 6) {
@@ -250,7 +251,7 @@ export const resetPassword = async (
 
   // Find user with valid reset token
   const user = await User.findOne({
-    resetPasswordToken: code,
+    resetPasswordToken: token,
     resetPasswordExpire: { $gt: Date.now() },
   });
 
