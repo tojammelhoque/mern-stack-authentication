@@ -12,6 +12,8 @@ export interface IUser extends Document {
   resetPasswordExpire?: Date;
   verificationToken?: string;
   verificationTokenExpireAt?: Date;
+  refreshToken?: string;
+  refreshTokenExpire?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -60,6 +62,13 @@ const userSchema = new Schema<IUser>(
     verificationTokenExpireAt: {
       type: Date,
     },
+    refreshToken: {
+      type: String,
+      select: false,
+    },
+    refreshTokenExpire: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
@@ -78,8 +87,6 @@ userSchema.methods.comparePassword = async function (
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
-
-
 
 userSchema.index({ email: 1 });
 export default mongoose.model<IUser>("User", userSchema);

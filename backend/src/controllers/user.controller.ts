@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import User from "../models/user.model";
 import { ApiResponse } from "../utils/response";
 import { AppError } from "../utils/errorHandler";
-import { generateTokenAndSetCookie, verifyToken } from "../helpers/auth.helper";
+import {  generateTokensAndSetCookies, verifyToken } from "../helpers/auth.helper";
 import {
   generateVerificationToken,
   generateSecureResetToken,
@@ -49,7 +49,7 @@ export const registerUser = async (
   });
 
   // Generate JWT token and set cookie
-  const token = generateTokenAndSetCookie(newUser._id.toString(), res);
+  const token = generateTokensAndSetCookies(newUser._id.toString(), res);
 
   try {
     await sendVerificationEmail(newUser.email, newUser.name, code);
