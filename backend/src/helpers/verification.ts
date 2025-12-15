@@ -26,7 +26,4 @@ export const generateSecureResetToken = () => {
 };
 
 
-// Verify if code is expired
-export const isVerificationExpired = (expiresAt: Date): boolean => {
-  return new Date() > expiresAt;
-};
+

@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import User from "../models/user.model";
 import { ApiResponse } from "../utils/response";
 import { AppError } from "../utils/errorHandler";
-import {  generateTokensAndSetCookies, verifyToken } from "../helpers/auth.helper";
+import {
+  generateTokensAndSetCookies,
+  clearAuthCookies,
+} from "../helpers/auth.helper";
 import {
   generateVerificationToken,
   generateSecureResetToken,
-  isVerificationExpired,
 } from "../helpers/verification";
 import {
   sendPasswordResetEmail,
@@ -20,8 +22,6 @@ export const registerUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Validate input
-
   const { name, email, password } = req.body;
 
   // Check for missing fields
@@ -31,11 +31,10 @@ export const registerUser = async (
 
   // Check if email already exists
   const existingUser = await User.findOne({ email });
-
-  // If email exists, throw error
   if (existingUser) {
     throw new AppError("Email already in use", 400);
   }
+
   // Generate verification token
   const { code, expiresAt } = generateVerificationToken();
 
@@ -48,11 +47,20 @@ export const registerUser = async (
     verificationTokenExpireAt: expiresAt,
   });
 
-  // Generate JWT token and set cookie
-  const token = generateTokensAndSetCookies(newUser._id.toString(), res);
+  // Generate access and refresh tokens
+  const { accessToken, refreshToken } = generateTokensAndSetCookies(
+    newUser._id.toString(),
+    res
+  );
 
+  // Save refresh token to database
+  newUser.refreshToken = refreshToken;
+  newUser.refreshTokenExpire = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  await newUser.save();
+
+  // Send verification email
   try {
-    await sendVerificationEmail(newUser.email, newUser.name, code);
+    await sendVerificationEmail(newUser.email, code, newUser.name);
   } catch (error) {
     console.error("Error sending verification email:", error);
   }
@@ -66,17 +74,14 @@ export const registerUser = async (
         name: newUser.name,
         email: newUser.email,
         isVerified: newUser.isVerified,
-        verifyToken: newUser.verificationToken,
-        verifyTokenExpireAt: newUser.verificationTokenExpireAt,
       },
-      token,
+      accessToken,
     },
     "User registered successfully. Please verify your email."
   );
 };
 
 // ========== User email verification controller ==================
-
 export const verifyEmail = async (
   req: Request,
   res: Response,
@@ -151,12 +156,17 @@ export const loginUser = async (
     throw new AppError("Invalid email or password", 401);
   }
 
-  // Update last login
+  // Generate access and refresh tokens
+  const { accessToken, refreshToken } = generateTokensAndSetCookies(
+    user._id.toString(),
+    res
+  );
+
+  // Save refresh token to database
+  user.refreshToken = refreshToken;
+  user.refreshTokenExpire = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   user.lastLogin = new Date();
   await user.save();
-
-  // Generate token and set cookie
-  const token = generateTokenAndSetCookie(user._id.toString(), res);
 
   ApiResponse.success(
     res,
@@ -168,27 +178,72 @@ export const loginUser = async (
         isVerified: user.isVerified,
         lastLogin: user.lastLogin,
       },
-      token,
+      accessToken,
     },
     "Login successful"
   );
 };
 
 // ==================== USER LOGOUT CONTROLLER ====================
-
 export const logoutUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  // Clear cookie
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
+  const userId = (req as any).userId;
+
+  // Clear refresh token from database
+  if (userId) {
+    await User.findByIdAndUpdate(userId, {
+      refreshToken: undefined,
+      refreshTokenExpire: undefined,
+    });
+  }
+
+  // Clear both cookies
+  clearAuthCookies(res);
 
   ApiResponse.success(res, null, "Logout successful");
+};
+
+// ==================== REFRESH TOKEN CONTROLLER ====================
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    throw new AppError("Refresh token not found", 401);
+  }
+
+  // Find user with this refresh token
+  const user = await User.findOne({
+    refreshToken,
+    refreshTokenExpire: { $gt: Date.now() },
+  }).select("+refreshToken");
+
+  if (!user) {
+    throw new AppError("Invalid or expired refresh token", 401);
+  }
+
+  // Generate new tokens
+  const { accessToken, refreshToken: newRefreshToken } =
+    generateTokensAndSetCookies(user._id.toString(), res);
+
+  // Update refresh token in database
+  user.refreshToken = newRefreshToken;
+  user.refreshTokenExpire = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  await user.save();
+
+  ApiResponse.success(
+    res,
+    {
+      accessToken,
+    },
+    "Token refreshed successfully"
+  );
 };
 
 // ==================== FORGOT PASSWORD ====================
@@ -206,6 +261,7 @@ export const forgotPassword = async (
   const user = await User.findOne({ email });
 
   if (!user) {
+    // Don't reveal if email exists or not
     return ApiResponse.success(
       res,
       null,
@@ -213,7 +269,7 @@ export const forgotPassword = async (
     );
   }
 
-  // Generate reset token (6 digit code)
+  // Generate reset token (secure random token)
   const { token, expiresAt } = generateSecureResetToken();
 
   user.resetPasswordToken = token;
@@ -278,7 +334,6 @@ export const getCurrentUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Assuming you have auth middleware that adds user to req
   const userId = (req as any).userId;
 
   if (!userId) {
@@ -300,6 +355,7 @@ export const getCurrentUser = async (
         email: user.email,
         isVerified: user.isVerified,
         lastLogin: user.lastLogin,
+        createdAt: user.createdAt,
       },
     },
     "User retrieved successfully"
@@ -365,6 +421,10 @@ export const updateProfile = async (
     throw new AppError("Name is required", 400);
   }
 
+  if (name.length < 2) {
+    throw new AppError("Name must be at least 2 characters", 400);
+  }
+
   const user = await User.findByIdAndUpdate(
     userId,
     { name },
@@ -404,6 +464,13 @@ export const changePassword = async (
 
   if (newPassword.length < 6) {
     throw new AppError("New password must be at least 6 characters", 400);
+  }
+
+  if (currentPassword === newPassword) {
+    throw new AppError(
+      "New password must be different from current password",
+      400
+    );
   }
 
   const user = await User.findById(userId).select("+password");
@@ -453,8 +520,8 @@ export const deleteAccount = async (
   // Delete user
   await User.findByIdAndDelete(userId);
 
-  // Clear cookie
-  res.clearCookie("token");
+  // Clear cookies
+  clearAuthCookies(res);
 
   ApiResponse.success(res, null, "Account deleted successfully");
 };

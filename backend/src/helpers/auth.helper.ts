@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { Response } from "express";
 import { config } from "../config/env";
 import crypto from "crypto";
+import { JwtPayloadWithId } from "../types/jwt.types";
 
 // ==================== ACCESS TOKEN (Short-lived: 15 minutes) ====================
 export const generateAccessToken = (userId: string): string => {
@@ -45,11 +46,22 @@ export const generateTokensAndSetCookies = (
 };
 
 // ==================== VERIFY ACCESS TOKEN ====================
-export const verifyAccessToken = (token: string) => {
+export const verifyAccessToken = (token: string): JwtPayloadWithId => {
   try {
-    return jwt.verify(token, config.jwtSecret);
+    const decoded = jwt.verify(token, config.jwtSecret);
+
+    // Type guard to ensure decoded has id property
+    if (typeof decoded === "string") {
+      throw new Error("Invalid token format");
+    }
+
+    if (!decoded.id) {
+      throw new Error("Token missing user id");
+    }
+
+    return decoded as JwtPayloadWithId;
   } catch (error) {
-    throw error; // Let caller handle the error
+    throw error;
   }
 };
 
