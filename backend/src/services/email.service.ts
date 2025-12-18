@@ -62,7 +62,7 @@ export const sendWelcomeEmail = async (email: string, userName: string) => {
     const mailOptions = {
       from: `"${config.emailFrom.name}" <${config.emailFrom.address}>`,
       to: email,
-      subject: "Welcome to Your App! 🎉",
+      subject: "Welcome to Mern Stack Authentication System 🎉",
       html: welcomeEmailTemplate(userName),
       text: welcomeEmailText(userName),
     };

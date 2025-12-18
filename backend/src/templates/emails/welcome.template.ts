@@ -5,7 +5,7 @@ export const welcomeEmailTemplate = (userName: string) => {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Your App</title>
+        <title>Welcome to Mern Stack Authentication System</title>
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
@@ -16,7 +16,7 @@ export const welcomeEmailTemplate = (userName: string) => {
                 <!-- Header -->
                 <tr>
                   <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 20px; text-align: center;">
-                    <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Your App Name</h1>
+                    <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Mern Stack Authentication System</h1>
                   </td>
                 </tr>
                 
@@ -135,7 +135,7 @@ export const welcomeEmailTemplate = (userName: string) => {
                     
                     <p style="color: #666; font-size: 14px; margin-top: 10px;">
                       Best regards,<br/>
-                      <strong style="color: #333;">The Your App Team</strong>
+                      <strong style="color: #333;">The Mern Stack Authentication System Team</strong>
                     </p>
                   </td>
                 </tr>
@@ -144,7 +144,7 @@ export const welcomeEmailTemplate = (userName: string) => {
                 <tr>
                   <td style="background-color: #f9f9f9; padding: 20px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
                     <p style="margin: 0; color: #666; font-size: 12px;">
-                      © ${new Date().getFullYear()} Your App. All rights reserved.
+                      © ${new Date().getFullYear()} Mern Stack Authentication System. All rights reserved.
                     </p>
                     <p style="margin: 10px 0 0 0; color: #999; font-size: 11px;">
                       This email was sent because you successfully verified your account.
@@ -191,8 +191,8 @@ If you have any questions, contact us at support@yourapp.com
 We're excited to have you on board!
 
 Best regards,
-The Your App Team
+The Mern Stack Authentication System Team
 
-© ${new Date().getFullYear()} Your App. All rights reserved.
+© ${new Date().getFullYear()} Mern Stack Authentication System. All rights reserved.
   `.trim();
 };

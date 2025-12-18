@@ -1,11 +1,15 @@
-import React from 'react'
+import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { LoadingSpinner } from "../components/common";
 
 function Logout() {
-  return (
-    <div>
-      <h1>logout</h1>
-    </div>
-  )
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    logout();
+  }, []);
+
+  return <LoadingSpinner fullScreen />;
 }
 
-export default Logout
+export default Logout;

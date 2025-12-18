@@ -22,7 +22,7 @@ export const resetPasswordEmailTemplate = (
                 <!-- Header -->
                 <tr>
                   <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 20px; text-align: center;">
-                    <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Your App Name</h1>
+                    <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Mern Stack Authentication System</h1>
                   </td>
                 </tr>
                 
@@ -93,7 +93,7 @@ export const resetPasswordEmailTemplate = (
                 <tr>
                   <td style="background-color: #f9f9f9; padding: 20px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
                     <p style="margin: 0; color: #666; font-size: 12px;">
-                      © ${new Date().getFullYear()} Your App. All rights reserved.
+                      © ${new Date().getFullYear()} Mern Stack Authentication System. All rights reserved.
                     </p>
                     <p style="margin: 10px 0 0 0; color: #999; font-size: 11px;">
                       This email was sent because a password reset was requested.
@@ -128,6 +128,6 @@ This link will expire in 1 hour.
 If you didn't request a password reset, please ignore this email.
 
 Best regards,
-Your App Team
+Mern Stack Authentication System Team
   `.trim();
 };
