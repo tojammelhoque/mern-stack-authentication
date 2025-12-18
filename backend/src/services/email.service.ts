@@ -13,13 +13,18 @@ import {
   resetPasswordEmailText,
 } from "../templates/emails/resetPassword.template";
 
-// Create reusable transporter
+// Create reusable transporter with generic SMTP
 const transporter = nodemailer.createTransport({
-  host: config.mailtrap.host,
-  port: config.mailtrap.port,
+  host: config.smtp.host,
+  port: config.smtp.port,
+  secure: config.smtp.secure,
   auth: {
-    user: config.mailtrap.user,
-    pass: config.mailtrap.pass,
+    user: config.smtp.user,
+    pass: config.smtp.pass,
+  },
+
+  tls: {
+    rejectUnauthorized: false, // Allow self-signed certificates (for development)
   },
 });
 
@@ -83,8 +88,9 @@ export const sendPasswordResetEmail = async (
   resetToken: string
 ) => {
   try {
-    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${resetToken}`;
-
+    const resetUrl = `${
+      process.env.FRONTEND_URL || "http://localhost:5173"
+    }/reset-password?token=${resetToken}`;
     const mailOptions = {
       from: `"${config.emailFrom.name}" <${config.emailFrom.address}>`,
       to: email,
