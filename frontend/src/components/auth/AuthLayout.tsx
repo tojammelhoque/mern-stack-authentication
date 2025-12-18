@@ -11,7 +11,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-purple-600 to-purple-800 rounded-2xl shadow-lg mb-4">
-            <span className="text-2xl font-bold text-white">A</span>
+            <span className="text-2xl font-bold text-white">AS</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-800">
             Mern Stack Authentication System
