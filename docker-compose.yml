@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file: ./backend/.env
+    ports:
+      - "5000:5000"
+    container_name: auth_backend
+    restart: unless-stopped
+    networks:
+      - auth_network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://backend:5000/api/v1
+    ports:
+      - "5173:3000"
+    container_name: auth_frontend
+    depends_on:
+      - backend
+    networks:
+      - auth_network
+    restart: unless-stopped
+networks:
+  auth_network:
+    driver: bridge
