@@ -1,4 +1,5 @@
-import { useFormWithSchema } from "../hooks/useFormWithSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthStore } from "../store/authStore";
 import {
@@ -17,8 +18,8 @@ function Profile() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useFormWithSchema<UpdateProfileFormData>({
-    schema: updateProfileSchema,
+  } = useForm<UpdateProfileFormData>({
+    resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       name: user?.name || "",
     },

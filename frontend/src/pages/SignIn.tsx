@@ -1,5 +1,6 @@
-import { useFormWithSchema } from "../hooks/useFormWithSchema";
 import { useAuth } from "../hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "../schemas/auth.schema";
 import {
   Input,
@@ -14,12 +15,13 @@ import { FiMail } from "react-icons/fi";
 
 function SignIn() {
   const { login, isLoading } = useAuth();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useFormWithSchema<LoginFormData>({
-    schema: loginSchema,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data: LoginFormData) => {

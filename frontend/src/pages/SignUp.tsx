@@ -1,13 +1,8 @@
-import { useFormWithSchema } from "../hooks/useFormWithSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../hooks/useAuth";
 import { registerSchema, type RegisterFormData } from "../schemas/auth.schema";
-import {
-  Input,
-  Button,
-  Card,
-  CardHeader,
-  Link,
-} from "../components/common";
+import { Input, Button, Card, CardHeader, Link } from "../components/common";
 import {
   AuthLayout,
   PasswordInput,
@@ -17,13 +12,14 @@ import { FiMail, FiUser } from "react-icons/fi";
 
 function SignUp() {
   const { register: registerUser, isLoading } = useAuth();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useFormWithSchema<RegisterFormData>({
-    schema: registerSchema,
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
   });
 
   const password = watch("password") || "";
@@ -39,10 +35,7 @@ function SignUp() {
   return (
     <AuthLayout>
       <Card>
-        <CardHeader
-          title="Create Account"
-          subtitle="Sign up to get started"
-        />
+        <CardHeader title="Create Account" subtitle="Sign up to get started" />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
@@ -84,8 +77,7 @@ function SignUp() {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link to="/sign-in">Sign in</Link>
+          Already have an account? <Link to="/sign-in">Sign in</Link>
         </div>
       </Card>
     </AuthLayout>

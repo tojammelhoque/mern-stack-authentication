@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import type { ErrorInfo, ReactNode } from "react";
+import { Component } from "react";
 import Button from "./common/Button";
 
 interface Props {
@@ -32,7 +33,7 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">😔</div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -42,7 +43,7 @@ class ErrorBoundary extends Component<Props, State> {
               We're sorry for the inconvenience. An unexpected error has
               occurred.
             </p>
-            {process.env.NODE_ENV === "development" && this.state.error && (
+            {import.meta.env.NODE_ENV === "development" && this.state.error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
                 <p className="text-sm text-red-800 font-mono break-all">
                   {this.state.error.toString()}

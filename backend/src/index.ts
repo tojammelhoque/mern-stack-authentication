@@ -40,7 +40,7 @@ app.use(errorHandler)
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server is running on port ${config.port}`);
       console.log(`📝 Environment: ${config.nodeEnv}`);
     });

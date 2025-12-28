@@ -1,21 +1,30 @@
-import { useFormWithSchema } from "../hooks/useFormWithSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../hooks/useAuth";
 import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
 } from "../schemas/auth.schema";
-import { Input, Button, Card, CardHeader, Link, Alert } from "../components/common";
+import {
+  Input,
+  Button,
+  Card,
+  CardHeader,
+  Link,
+  Alert,
+} from "../components/common";
 import { AuthLayout } from "../components/auth";
 import { FiMail, FiLock } from "react-icons/fi";
 
 function ForgotPassword() {
   const { forgotPassword, isLoading } = useAuth();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useFormWithSchema<ForgotPasswordFormData>({
-    schema: forgotPasswordSchema,
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
   });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {

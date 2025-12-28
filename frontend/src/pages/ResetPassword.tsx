@@ -1,4 +1,5 @@
-import { useFormWithSchema } from "../hooks/useFormWithSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../hooks/useAuth";
 import {
   resetPasswordSchema,
@@ -25,8 +26,8 @@ function ResetPassword() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useFormWithSchema<ResetPasswordFormData>({
-    schema: resetPasswordSchema,
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
   });
 
   const newPassword = watch("newPassword") || "";

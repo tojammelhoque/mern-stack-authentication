@@ -1,4 +1,5 @@
-import React, { type InputHTMLAttributes, forwardRef } from "react";
+import  type {  InputHTMLAttributes  } from "react";
+import { forwardRef } from "react";
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;

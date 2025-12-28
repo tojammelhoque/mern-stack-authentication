@@ -1,4 +1,5 @@
-import { useFormWithSchema } from "../hooks/useFormWithSchema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../hooks/useAuth";
 import {
   resendVerificationSchema,
@@ -17,12 +18,13 @@ import { FiMail } from "react-icons/fi";
 
 function ResendVerificationCode() {
   const { resendVerificationCode, isLoading } = useAuth();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useFormWithSchema<ResendVerificationFormData>({
-    schema: resendVerificationSchema,
+  } = useForm<ResendVerificationFormData>({
+    resolver: zodResolver(resendVerificationSchema),
   });
 
   const onSubmit = async (data: ResendVerificationFormData) => {
