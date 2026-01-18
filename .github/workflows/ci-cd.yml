@@ -1,29 +1,60 @@
-name: CI/CD
+name: Render CI
 
 on:
-    push:
-        branches: ["main"]
+  push:
+    branches: ["main"]
+  
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  docker-build-check:
+    runs-on: ubuntu-latest
 
-        steps:
-            # Code Checkout
-            - name: Checkout code
-              uses: actions/checkout@v4
+    steps:
+      # 1️⃣ Code checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            # Docker Hub Login
+      # 2️⃣ Backend Docker build check
+      - name: Build backend image
+        run: |
+          cd backend
+          docker build -t backend-test .
 
-            - name: Login to DockerHub
-              uses: docker/login-action@v3
-              with:
-                  username: ${{ secrets.DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # 3️⃣ Frontend Docker build check
+      - name: Build frontend image
+        run: |
+          cd frontend
+          docker build \
+            --build-arg VITE_API_URL=http://localhost:5000/api/v1 \
+            -t frontend-test .
 
-            # Build and Push Backend Image
+# name: CI/CD
 
-            - name: Build Images
-              run: docker compose build
-              
-            - name: Push images
-              run: docker compose push  
+# on:
+#     push:
+#         branches: ["main"]
+# jobs:
+#     build:
+#         runs-on: ubuntu-latest
+
+#         steps:
+#             # Code Checkout
+#             - name: Checkout code
+#               uses: actions/checkout@v4
+
+#             # Docker Hub Login
+
+#             - name: Login to DockerHub
+#               uses: docker/login-action@v3
+#               with:
+#                   username: ${{ secrets.DOCKERHUB_USERNAME }}
+#                   password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#             # Build and Push Backend Image
+
+#             - name: Build Images
+#               run: docker compose build
+
+#             - name: Push images
+#               run: docker compose push
+
