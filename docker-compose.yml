@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   backend:
+    image: tojammelhoque/backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -13,6 +14,7 @@ services:
     networks:
       - auth_network
   frontend:
+    image: tojammelhoque/frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
