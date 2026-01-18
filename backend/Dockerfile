@@ -2,7 +2,7 @@
 
 
 # Use Node.js LTS version
-FROM node:24-alpine
+FROM node:24-alpine AS build
 
 # Set working directory
 WORKDIR /app
