@@ -4,6 +4,12 @@ FROM node:24-alpine AS build-stage
 # Set working directory
 WORKDIR /app
 
+# Set environment variables
+
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
