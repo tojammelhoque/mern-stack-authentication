@@ -182,6 +182,5 @@ export const sendPasswordResetEmail = async (
     console.error("❌ Resend reset email error:", error);
     throw new Error("Failed to send reset email");
   }
-
   
 };

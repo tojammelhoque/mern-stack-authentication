@@ -37,7 +37,7 @@ function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireVerified={true}>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -92,7 +92,7 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireVerified={true}>
               <Profile />
             </ProtectedRoute>
           }
@@ -100,7 +100,7 @@ function App() {
         <Route
           path="/settings"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireVerified={true}>
               <Settings />
             </ProtectedRoute>
           }
@@ -108,7 +108,7 @@ function App() {
         <Route
           path="/change-password"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireVerified={true}>
               <ChangePassword />
             </ProtectedRoute>
           }
@@ -124,7 +124,7 @@ function App() {
         <Route
           path="/logout"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute >
               <Logout />
             </ProtectedRoute>
           }
