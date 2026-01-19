@@ -35,7 +35,7 @@ function ChangePassword() {
       <div className="max-w-2xl mx-auto">
         {/* Back Button */}
         <Link
-          to="/dashboard"
+          to="/"
           className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6"
         >
           <FiArrowLeft />
@@ -89,7 +89,7 @@ function ChangePassword() {
               <Button type="submit" fullWidth isLoading={isLoading}>
                 Update Password
               </Button>
-              <Link to="/dashboard" className="flex-1">
+              <Link to="/" className="flex-1">
                 <Button type="button" variant="outline" fullWidth>
                   Cancel
                 </Button>

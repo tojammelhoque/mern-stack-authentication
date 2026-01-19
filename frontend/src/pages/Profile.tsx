@@ -30,11 +30,11 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-blue-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Back Button */}
         <Link
-          to="/dashboard"
+          to="/"
           className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6"
         >
           <FiArrowLeft />
@@ -86,7 +86,7 @@ function Profile() {
               <Button type="submit" fullWidth isLoading={isLoading}>
                 Save Changes
               </Button>
-              <Link to="/dashboard" className="flex-1">
+              <Link to="/" className="flex-1">
                 <Button type="button" variant="outline" fullWidth>
                   Cancel
                 </Button>

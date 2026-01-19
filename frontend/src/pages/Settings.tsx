@@ -24,11 +24,11 @@ function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-blue-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Back Button */}
         <Link
-          to="/dashboard"
+          to="/"
           className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6"
         >
           <FiArrowLeft />
@@ -149,7 +149,7 @@ function Settings() {
         >
           <div className="space-y-4">
             <div className="flex items-start gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
-              <FiAlertTriangle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
+              <FiAlertTriangle className="text-red-600 shrink-0 mt-0.5" size={20} />
               <div>
                 <h3 className="font-semibold text-red-900 mb-1">
                   Are you absolutely sure?
