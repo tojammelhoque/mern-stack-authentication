@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
+dotenv.config();
 
 const requiredEnvVars = [
   "MONGO_URI",

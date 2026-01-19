@@ -28,6 +28,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+//  🔍 SMTP DEBUG 
+console.log("📧 SMTP CONFIG CHECK", {
+  host: config.smtp.host,
+  port: config.smtp.port,
+  secure: config.smtp.secure,
+  user: config.smtp.user ? "OK" : "❌ MISSING",
+  pass: config.smtp.pass ? "OK" : "❌ MISSING",
+  from: config.emailFrom.address ? "OK" : "❌ MISSING",
+});
+
+
 // Verify transporter configuration
 transporter.verify((error, success) => {
   if (error) {
