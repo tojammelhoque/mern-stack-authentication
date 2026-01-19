@@ -20,7 +20,7 @@ import {
 export const registerUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { name, email, password } = req.body;
 
@@ -50,7 +50,7 @@ export const registerUser = async (
   // Generate access and refresh tokens
   const { accessToken, refreshToken } = generateTokensAndSetCookies(
     newUser._id.toString(),
-    res
+    res,
   );
 
   // Save refresh token to database
@@ -77,7 +77,7 @@ export const registerUser = async (
       },
       accessToken,
     },
-    "User registered successfully. Please verify your email."
+    "User registered successfully. Please verify your email.",
   );
 };
 
@@ -85,7 +85,7 @@ export const registerUser = async (
 export const verifyEmail = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { code } = req.body;
 
@@ -110,11 +110,14 @@ export const verifyEmail = async (
   await user.save();
 
   // Send welcome email
-  try {
-    await sendWelcomeEmail(user.email, user.name);
-  } catch (error) {
+  // try {
+  //   await sendWelcomeEmail(user.email, user.name);
+  // } catch (error) {
+  //   console.error("Failed to send welcome email:", error);
+  // }
+  sendWelcomeEmail(user.email, user.name).catch((error) => {
     console.error("Failed to send welcome email:", error);
-  }
+  });
 
   ApiResponse.success(
     res,
@@ -126,7 +129,7 @@ export const verifyEmail = async (
         isVerified: user.isVerified,
       },
     },
-    "Email verified successfully!"
+    "Email verified successfully!",
   );
 };
 
@@ -134,7 +137,7 @@ export const verifyEmail = async (
 export const loginUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { email, password } = req.body;
 
@@ -159,7 +162,7 @@ export const loginUser = async (
   // Generate access and refresh tokens
   const { accessToken, refreshToken } = generateTokensAndSetCookies(
     user._id.toString(),
-    res
+    res,
   );
 
   // Save refresh token to database
@@ -180,7 +183,7 @@ export const loginUser = async (
       },
       accessToken,
     },
-    "Login successful"
+    "Login successful",
   );
 };
 
@@ -188,7 +191,7 @@ export const loginUser = async (
 export const logoutUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = (req as any).userId;
 
@@ -210,7 +213,7 @@ export const logoutUser = async (
 export const refreshToken = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { refreshToken } = req.cookies;
 
@@ -242,7 +245,7 @@ export const refreshToken = async (
     {
       accessToken,
     },
-    "Token refreshed successfully"
+    "Token refreshed successfully",
   );
 };
 
@@ -250,7 +253,7 @@ export const refreshToken = async (
 export const forgotPassword = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { email } = req.body;
 
@@ -265,7 +268,7 @@ export const forgotPassword = async (
     return ApiResponse.success(
       res,
       null,
-      "If your email is registered, you will receive a password reset link"
+      "If your email is registered, you will receive a password reset link",
     );
   }
 
@@ -293,7 +296,7 @@ export const forgotPassword = async (
 export const resetPassword = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { token, newPassword } = req.body;
 
@@ -324,7 +327,7 @@ export const resetPassword = async (
   ApiResponse.success(
     res,
     null,
-    "Password reset successful. You can now login with your new password."
+    "Password reset successful. You can now login with your new password.",
   );
 };
 
@@ -332,7 +335,7 @@ export const resetPassword = async (
 export const getCurrentUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = (req as any).userId;
 
@@ -358,7 +361,7 @@ export const getCurrentUser = async (
         createdAt: user.createdAt,
       },
     },
-    "User retrieved successfully"
+    "User retrieved successfully",
   );
 };
 
@@ -366,7 +369,7 @@ export const getCurrentUser = async (
 export const resendVerificationCode = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { email } = req.body;
 
@@ -397,14 +400,14 @@ export const resendVerificationCode = async (
   } catch (error) {
     throw new AppError(
       "Failed to send verification email. Please try again.",
-      500
+      500,
     );
   }
 
   ApiResponse.success(
     res,
     null,
-    "Verification code resent successfully. Check your email."
+    "Verification code resent successfully. Check your email.",
   );
 };
 
@@ -412,7 +415,7 @@ export const resendVerificationCode = async (
 export const updateProfile = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = (req as any).userId;
   const { name } = req.body;
@@ -428,7 +431,7 @@ export const updateProfile = async (
   const user = await User.findByIdAndUpdate(
     userId,
     { name },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   ).select("-password");
 
   if (!user) {
@@ -445,7 +448,7 @@ export const updateProfile = async (
         isVerified: user.isVerified,
       },
     },
-    "Profile updated successfully"
+    "Profile updated successfully",
   );
 };
 
@@ -453,7 +456,7 @@ export const updateProfile = async (
 export const changePassword = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = (req as any).userId;
   const { currentPassword, newPassword } = req.body;
@@ -469,7 +472,7 @@ export const changePassword = async (
   if (currentPassword === newPassword) {
     throw new AppError(
       "New password must be different from current password",
-      400
+      400,
     );
   }
 
@@ -496,7 +499,7 @@ export const changePassword = async (
 export const deleteAccount = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = (req as any).userId;
   const { password } = req.body;
