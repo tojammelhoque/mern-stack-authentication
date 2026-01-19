@@ -29,16 +29,16 @@ export const generateTokensAndSetCookies = (
   // Set Access Token Cookie (15 minutes)
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: config.nodeEnv === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
   // Set Refresh Token Cookie (7 days)
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: config.nodeEnv === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
@@ -69,13 +69,13 @@ export const verifyAccessToken = (token: string): JwtPayloadWithId => {
 export const clearAuthCookies = (res: Response): void => {
   res.clearCookie("accessToken", {
     httpOnly: true,
-    secure: config.nodeEnv === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
   });
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: config.nodeEnv === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none",
   });
 };
